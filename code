@@ -1,0 +1,551 @@
+import telegram.ext
+import random
+import requests
+from bs4 import BeautifulSoup
+import datetime
+import wikipedia
+import re
+
+
+def St_a(update):
+    url = "https://www.worldometers.info/coronavirus/country/austria"
+    req = requests.get(url)
+    bsObj = BeautifulSoup(req.text, "html.parser")
+    data = bsObj.find_all("div", class_="maincounter-number")
+    S_t = "Total Cases: " + str(data[0].text.strip()) + "\n Total Deaths: " + str(
+    data[1].text.strip()) + "\n Total Recovered: " + str(data[2].text.strip())
+    update.message.reply_text(S_t)
+
+
+def day(update):
+    x = datetime.datetime.now()
+    update.message.reply_text(x.strftime('%d %B'))
+
+
+def get_movies(update):
+    url = "https://www.boxofficemojo.com/weekend/2022W23/"
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    scrape_movie = soup.find_all("td", class_="a-text-left mojo-field-type-release mojo-cell-wide")
+    for movie in scrape_movie:
+         update.message.reply_text(movie.text)
+
+
+def get_bookF(update):
+    url = "https://westportlibrary.libguides.com/NYTimesbestsellers"
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    scrape_book = soup.find_all("div", class_="s-lg-book clearfix", limit=4)
+    for books in scrape_book:
+        update.message.reply_text(books.text)
+
+
+def get_bookNF(update):
+    url = "https://westportlibrary.libguides.com/NYTimesbestsellers"
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    author1 = soup.find_all("a", href = "http://catalog.westportlibrary.org/polaris/view.aspx?keyword=James patterson patterson stories of my life")
+    author2 = soup.find_all("a",href="http://catalog.westportlibrary.org/polaris/view.aspx?keyword=killing the killers o'reilly")
+    author3 = soup.find_all("a",href="http://catalog.westportlibrary.org/polaris/view.aspx?keyword=happy go lucky sedaris")
+    author4 = soup.find_all("a", href="http://catalog.westportlibrary.org/polaris/view.aspx?keyword=finding me viola davis")
+    book1 = soup.find_all("div", id="s-lg-link-desc-67307275")
+    book2 = soup.find_all("div", id="s-lg-link-desc-66853985")
+    book3 = soup.find_all("div", id="s-lg-link-desc-67217963")
+    book4 = soup.find_all("div", id="s-lg-link-desc-66748978")
+    for a1 in author1:
+        for a2 in author2:
+            for a3 in author3:
+                for a4 in author4:
+                    for b1 in book1:
+                        for b2 in book2:
+                            for b3 in book3:
+                              for b4 in book4:
+                                update.message.reply_text(a1.text)
+                                update.message.reply_text(b1.text)
+                                update.message.reply_text(a2.text)
+                                update.message.reply_text(b2.text)
+                                update.message.reply_text(a3.text)
+                                update.message.reply_text(b3.text)
+                                update.message.reply_text(a4.text)
+                                update.message.reply_text(b4.text)
+
+
+def high(update):
+    update.message.reply_text(""" these might help:
+    Drink plenty of fluids to stay hydrated.
+    Dress in lightweight clothing.
+    Use a light blanket if you feel chilled, until the chills end.
+    Take acetaminophen(Tylenol, others) or ibuprofen(Advil, Motrin IB, others).
+    if you need medicine use the /medication command to order it""")
+
+
+def get_game(update):
+    url = "https://www.gamespot.com/articles/the-25-best-mobile-games-in-2022/1100-6496469/"
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    scrape_game = soup.find_all("h2", dir="ltr", limit=4)
+    for games in scrape_game:
+        update.message.reply_text(games.text)
+
+
+def get_symptoms(update):
+        url = "https://www.cdc.gov/coronavirus/2019-ncov/symptoms-testing/symptoms.html"
+        page = requests.get(url)
+        soup = BeautifulSoup(page.content, 'html.parser')
+        sym = soup.find_all("ul", class_="cc-md-2")
+        for syms in sym:
+            update.message.reply_text(syms.text)
+
+
+def dep(update):
+    wiki = wikipedia.summary("Major depressive disorder",sentences = 2)
+    wiki = re.sub(r'==.*?==+', '', wiki)
+    wiki = wiki.replace('\n', '')
+    update.message.reply_text("if you have this symptoms please call for help \n"+ wiki + "\nyou can find the emergency numbers in emergency command")
+
+
+def reg(update):
+    url = "https://www.austria.info/en/service-and-facts/coronavirus-information"
+    page = requests.get(url)
+    plain = page.text
+    soup = BeautifulSoup(plain, 'html.parser')
+    soup = soup.find_all("div", class_="u-text content-wrapper is-aligned-left has-theme-black")
+    for div in soup:
+          update.message.reply_text(div.text)
+
+
+def cough(update):
+    update.message.reply_text(""" How to stop coughing:
+    drinking plenty of water.
+    sipping hot water with honey.
+    taking over - the - counter(OTC) cough medicines.
+    taking a steamy shower.
+    using a humidifier in the home.
+    to buy a humidifier check out the best seller just type humidifier""")
+
+
+def humid(update):
+    update.message.reply_text("https://www.amazon.com/Best-Sellers-Humidifiers/zgbs/home-garden/17685839011")
+
+
+def tiredness(update):
+    update.message.reply_text("""You can reduce tiredness and fatigue by:
+    developing a healthy sleep routine.(reading might help use /reading command)
+    having a nap when you can, if you need to.
+    drinking plenty of water to keep hydrated.
+    eating nutritional food.(you might find something interesting in /food command)
+    """)
+
+
+def cook(update):
+    update.message.reply_text("""10 easy meals when you are low on energy:
+    Easy toast toppers such as avocado, baked beans and boiled eggs.
+    Bread with peanut butter and banana.
+    Pasta with tuna/chicken, tomato, pesto and cheese.
+    Omelette or scrambled eggs with toast.
+    Canned fruit with yoghurt or custard.
+    dont give me that look! you must eat healthy :)
+    if you need groceries use /grocery command to order""")
+
+
+def mangaL(update):
+    update.message.reply_text("""
+    OTAKU!!! im excited, i knew you were an interesting person :)
+    https://jw-webmagazine.com/best-manga/
+    """)
+
+
+
+BOTTOKEN = "5422121954:AAHqI5LD_Vgtj0Fme7fb2_NTbnAbTIf9bXc"
+
+
+GREETING_INPUTS = ("hello", "hi", "greetings", "sup", "what's up", "hey")
+GREETING_RESPONSES = ["hi", "hey", "nods", "hi there", "hello", "I am glad! you are talking to me"]
+GOODBYE_INPUTS = ("bye", "goodbye")
+GOODBYE_RESPONSES = ["Have a nice day", "Stay safe in this crazy world!", "Bye!"]
+THANKS_INPUTS = ("thanks", "thank you")
+THANKS_RESPONSES = ["You\'re welcome!"]
+inputNum = ("left", "right", "none")
+Numbers = ["left", "right", "none"]
+game2Input = ("scissor", "paper", "stone")
+game2Output = ["scissor", "paper", "stone"]
+mid_fever = ("fever37","fever38")
+high_fever = ("fever39", "fever40")
+wow_fever =("fever41","fever42","fever43","fever44","fever45")
+electronicsInput = ("amazon", "ebay", "geizhals")
+shoppingInput = ("zara", "mango", "bershka", "desigual")
+reactionInput = ("scissor", "paper", "stone")
+reactionOutput = ["scissor", "paper", "stone"]
+date_input = ("1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31")
+
+
+def start(update, context):
+    update.message.reply_text("""
+    Hello, lets pass the quarantine time together!
+    The following commands are available:
+    
+    /help
+    /health
+    /information
+    /entertainment
+    /order 
+    
+    """)
+
+
+def health(update,context):
+    update.message.reply_text("""
+       The following commands are available:
+       
+       /test_day
+       /symptoms
+       /emergency
+       """)
+
+
+def information(update,context):
+    update.message.reply_text("""
+           The following commands are available:
+
+           /covid_regulations 
+           /statistics
+           /date
+           """)
+
+
+def help(update, context):
+    update.message.reply_text("""
+    The following commands are available:
+    /start
+    /content
+    """)
+
+
+def covid_regulations(update, context):
+    reg(update)
+
+
+def symptoms(update,context):
+    update.message.reply_text("""
+            What is the problem mate?
+            /symptoms1
+            /tell_me
+            """)
+
+
+def symptoms1(update, context):
+    get_symptoms(update)
+
+
+def tell_me(update, context):
+    update.message.reply_text("which symptoms do you have? fever,cough,tiredness (please type fever like this fever38)")
+
+
+def emergency(update, context):
+    update.message.reply_text("""
+        What is the problem mate?
+        /emergency_contact
+        /feeling_down
+        """)
+
+
+
+
+def emergency_contact(update, context):
+    update.message.reply_text("""Emergency (24 hours 7 days a week):
+       Police: 113
+       Ambulance:144
+       Austria Suicide Hotline: 017133374
+       Psychiatric counselling: 01 313 30""")
+
+
+def feeling_down(update, context):
+    dep(update)
+
+
+def test_day(update, context):
+    update.message.reply_text("When did you get sick? give me the day as a number")
+
+
+def date(update, context):
+    day(update)
+
+
+def content(update, context):
+    update.message.reply_text("I'm a robot designed to entertain you while you are in quarantine")
+
+
+def statistics(update, context):
+    St_a(update)
+
+
+def order(update, context):
+    update.message.reply_text("""
+           The Following entertainments are available:
+           /grocery
+           /food
+           /medication
+           /cafe
+           /shopping 
+           """)
+
+
+def food(update,context):
+    update.message.reply_text("""
+    /order_food
+    /cook_together -> if you are not tired
+    """)
+
+
+def order_food(update, context):
+    update.message.reply_text("https://www.mjam.net/en/?r=1")
+
+
+def cook_together(update, context):
+    update.message.reply_text("""
+    /vegetarian
+    /vegan
+    /Pescatarian
+    """)
+
+
+def vegetarian(update, context):
+    update.message.reply_text("https://www.bbcgoodfood.com/recipes/collection/easy-vegan-recipes")
+
+
+def vegan(update, context):
+    update.message.reply_text("https://www.bbcgoodfood.com/recipes/collection/quick-veggie-recipes")
+
+
+def Pescatarian(update, context):
+    cook(update)
+
+
+def grocery(update, context):
+    update.message.reply_text("https://shop.billa.at")
+    update.message.reply_text("https://www.interspar.at/shop/lebensmittel/")
+    update.message.reply_text("https://www.hofer.at/de/onlineshop/onlineshop-aktionsartikel.html")
+
+
+def medication(update, context):
+    update.message.reply_text("https://www.apotheke.at")
+
+
+def cafe(update, context):
+    update.message.reply_text("https://rauwolf-coffee.at/kaffee-espresso/")
+
+
+def shopping(update, context):
+    update.message.reply_text("""
+               The Following categories are available:
+               /electronics
+               /clothes
+               """)
+
+
+def electronics(update, context):
+    update.message.reply_text("which one do you prefer amazon, ebay or geizhal?")
+
+
+def clothes(update, context):
+    update.message.reply_text("pick one store zara, mango, bershka, desigual")
+
+
+def entertainment(update, context):
+    update.message.reply_text("""
+    The Following entertainments are available:
+
+    /games
+    /movies 
+    /reading 
+    /news 
+    """)
+
+
+def reading(update,context):
+    update.message.reply_text("""
+    
+    /books
+    /manga
+    """)
+
+
+def manga(update,context):
+    mangaL(update)
+
+
+def books(update, context):
+    update.message.reply_text("""
+    The Following entertainments are available:
+
+    /fictional
+    /nonfictional 
+    """)
+
+
+def fictional(update, context):
+    get_bookF(update)
+
+
+def nonfictional(update, context):
+    get_bookNF(update)
+
+
+def movies(update,context):
+    update.message.reply_text("""
+    The Following entertainments are available:
+
+    /box_office
+    /netflix
+    """)
+
+
+def box_office(update, context):
+    get_movies(update)
+
+
+def netflix(update, context):
+    update.message.reply_text("https://top10.netflix.com")
+
+
+def news(update, context):
+    update.message.reply_text("https://orf.at")
+
+
+def games(update,context):
+    update.message.reply_text("""
+    The Following entertainments are available:
+
+    /lets_play 
+    /game_suggestion
+    """)
+
+
+def lets_play(update, context):
+        update.message.reply_text("scissor, paper or stone?")
+
+
+def game_suggestion(update, context):
+        get_game(update)
+
+
+def messages(update, context):
+    for word in update.message.text.lower().split():
+        if word in GREETING_INPUTS:
+            update.message.reply_text(random.choice(GREETING_RESPONSES))
+        elif word in GOODBYE_INPUTS:
+            update.message.reply_text(random.choice(GOODBYE_RESPONSES))
+        elif word in THANKS_INPUTS:
+            update.message.reply_text(random.choice(THANKS_RESPONSES))
+        elif word in mid_fever:
+            update.message.reply_text("perfect! enjoy resting :)")
+        elif word in high_fever:
+            high(update)
+        elif word in wow_fever:
+            update.message.reply_text("are you kidding me! how is it possible!? ")
+        elif update.message.text.lower() == "cough":
+            cough(update)
+        elif update.message.text.lower() == "humidifier":
+            humid(update)
+        elif update.message.text.lower() == "tiredness":
+            tiredness(update)
+        elif word in game2Input:
+            a = random.choice(game2Output)
+            if a == "scissor" and update.message.text.lower() == "scissor":
+                update.message.reply_text("draw! i have also scissor! ")
+            elif a == "scissor" and update.message.text.lower() == "paper":
+                update.message.reply_text("you lost :) my scissor cuts your paper.")
+            elif a == "scissor" and update.message.text.lower() == "stone":
+                update.message.reply_text("you won ,your stone breaks my scissor.")
+            elif a == "paper" and update.message.text.lower() == "paper":
+                update.message.reply_text("draw! i have also paper")
+            elif a == "paper" and update.message.text.lower() == "scissor":
+                update.message.reply_text("you won  , your scissor cuts my paper!")
+            elif a == "paper" and update.message.text.lower() == "stone":
+                update.message.reply_text("you lost  , my paper covers you stone!")
+            elif a == "stone" and update.message.text.lower() == "stone":
+                update.message.reply_text("draw! i have also stone.")
+            elif a == "stone" and update.message.text.lower() == "scissor":
+                update.message.reply_text("you lost , my stone breaks your scissor!")
+            elif a == "stone" and update.message.text.lower() == "paper":
+                update.message.reply_text("you won :) , you paper covers my stone")
+        elif word in date_input:
+            x = datetime.datetime.now()
+            e = int(x.strftime('%d'))
+            m = int(update.message.text.lower())
+            check = m + 14
+            wait = abs(check - e)
+            string = str(wait)
+            if wait >= 8:
+                update.message.reply_text("hold your horses you need to wait until " + string + " more days")
+            elif wait>=4 and wait<=7:
+                update.message.reply_text("hang in there a bit more! you need to wait " + string + " more days")
+            elif wait>1 and wait<=3:
+                update.message.reply_text("almost there! you need to wait " + string + " more days")
+            elif wait==0:
+                update.message.reply_text("finally it is safe to go out and take a test ")
+        elif word in electronicsInput:
+            if update.message.text.lower() == "amazon":
+                update.message.reply_text("https://www.amazon.de")
+            elif update.message.text.lower() == "ebay":
+                update.message.reply_text("https://www.ebay.at/")
+            elif update.message.text.lower() == "geizahl":
+                update.message.reply_text("https://geizhals.at")
+        elif word in shoppingInput:
+            if update.message.text.lower() == "zara":
+                update.message.reply_text("https://www.zara.com/at/")
+            elif update.message.text.lower() == "mango":
+                update.message.reply_text("https://shop.mango.com/at")
+            elif update.message.text.lower() == "bershka":
+                update.message.reply_text("https://www.bershka.com/at/")
+            elif update.message.text.lower() == "desigual":
+                update.message.reply_text("https://www.desigual.com/de_AT/")
+
+
+updater = telegram.ext.Updater(BOTTOKEN, use_context=True)
+disp = updater.dispatcher
+
+disp.add_handler(telegram.ext.CommandHandler("start", start))
+disp.add_handler(telegram.ext.CommandHandler("help", help))
+disp.add_handler(telegram.ext.CommandHandler("information", information))
+disp.add_handler(telegram.ext.CommandHandler("health", health))
+disp.add_handler(telegram.ext.CommandHandler("test_day", test_day))
+disp.add_handler(telegram.ext.CommandHandler("date", date))
+disp.add_handler(telegram.ext.CommandHandler("content", content))
+disp.add_handler(telegram.ext.CommandHandler("statistics", statistics))
+disp.add_handler(telegram.ext.CommandHandler("order", order))
+disp.add_handler(telegram.ext.CommandHandler("grocery", grocery))
+disp.add_handler(telegram.ext.CommandHandler("food", food))
+disp.add_handler(telegram.ext.CommandHandler("order_food", order_food))
+disp.add_handler(telegram.ext.CommandHandler("cook_together", cook_together))
+disp.add_handler(telegram.ext.CommandHandler("vegan", vegan))
+disp.add_handler(telegram.ext.CommandHandler("vegetarian", vegetarian))
+disp.add_handler(telegram.ext.CommandHandler("Pescatarian", Pescatarian))
+disp.add_handler(telegram.ext.CommandHandler("medication", medication))
+disp.add_handler(telegram.ext.CommandHandler("cafe", cafe))
+disp.add_handler(telegram.ext.CommandHandler("shopping", shopping))
+disp.add_handler(telegram.ext.CommandHandler("electronics", electronics))
+disp.add_handler(telegram.ext.CommandHandler("clothes", clothes))
+disp.add_handler(telegram.ext.CommandHandler("entertainment", entertainment))
+disp.add_handler(telegram.ext.CommandHandler("games", games))
+disp.add_handler(telegram.ext.CommandHandler("lets_play", lets_play))
+disp.add_handler(telegram.ext.CommandHandler("game_suggestion", game_suggestion))
+disp.add_handler(telegram.ext.CommandHandler("movies", movies))
+disp.add_handler(telegram.ext.CommandHandler("box_office", box_office))
+disp.add_handler(telegram.ext.CommandHandler("netflix", netflix))
+disp.add_handler(telegram.ext.CommandHandler("reading", reading))
+disp.add_handler(telegram.ext.CommandHandler("books", books))
+disp.add_handler(telegram.ext.CommandHandler("fictional", fictional))
+disp.add_handler(telegram.ext.CommandHandler("nonfictional", nonfictional))
+disp.add_handler(telegram.ext.CommandHandler("news", news))
+disp.add_handler(telegram.ext.CommandHandler("manga", manga))
+disp.add_handler(telegram.ext.CommandHandler("covid_regulations", covid_regulations))
+disp.add_handler(telegram.ext.CommandHandler("symptoms", symptoms))
+disp.add_handler(telegram.ext.CommandHandler("symptoms1", symptoms1))
+disp.add_handler(telegram.ext.CommandHandler("tell_me", tell_me))
+disp.add_handler(telegram.ext.CommandHandler("emergency", emergency))
+disp.add_handler(telegram.ext.CommandHandler("emergency_contact", emergency_contact))
+disp.add_handler(telegram.ext.CommandHandler("feeling_down", feeling_down))
+disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, messages))
+updater.start_polling()
+updater.idle()
